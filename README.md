@@ -179,7 +179,7 @@ vault-0                   1/1     Running   1          14h   10.112.129.11   cl1
 
 1. Создаем kv секрет в vault (использовал веб интерфейс) /netology/clokub-14-02/task-2
 
-key: responseText
+key: responseText  
 value: Hello from Netology!  
 
 ![img4](./img/4.png)
@@ -195,7 +195,7 @@ $ export VAULT_TOKEN=<<you token>>
 
 
 
-3. Создаем политику для роли
+3. Создаем политику для роли с доступом на чтение секретов из созданного выше пути
 
 
 ```shell
@@ -302,7 +302,7 @@ COPY /scripts /app
 
 9. Запушил образ в https://hub.docker.com/repository/docker/rdegtyarev/fedora-pip (версия 0.2.0)
 
-10. Подготовил СonfigMap с конфигурацией vault agent
+10. Подготовил СonfigMap с конфигурацией vault agent.  
 Агент будет авторизоваться по role_id получать токены и сохранять их в файл. Приложение (python скрипт) будет авторизоваться в vault с использованием полученного токена.
 
 ```yaml
@@ -457,19 +457,6 @@ $ python3 /app/main.py
 Hello from Netology!
 ```
 Приложение успешно авторизуется с использованием полученного токена и возвращает секрет.
-
-
-Токен обновляется 1 раз в час
-```shell
-$ cat $APPROLE_UNWRAPPEN_TOKEN_FILE 
-s.qHNvnTTwNOXwkJUbJyoFiu1b
-```
-спустя час
-
-```shell
-$ cat $APPROLE_UNWRAPPEN_TOKEN_FILE 
-
-```
 
 ---
 
