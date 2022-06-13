@@ -61,11 +61,11 @@ client.secrets.kv.v2.read_secret_version(
 ### Решение
 
 
-1. Манифесты для деплоя Vault взял из примера https://gitlab.com/k11s-os/k8s-lessons/-/tree/main/Vault, изменил только storageClassName.
+1. Манифесты для деплоя Vault взял из примера https://gitlab.com/k11s-os/k8s-lessons/-/tree/main/Vault, изменил только storageClassName (./vault/).
 
-2. Для удобства подготовил docker образ (./docker/) с установленными pip и hvac.
+2. Для удобства подготовил docker образ с fedora (./app/Dockerfile) с установленными pip и hvac (запушил в https://hub.docker.com/repository/docker/rdegtyarev/fedora-pip).
 
-3. Cоздал манифест для деплоя модифицированной fedora (./app).
+3. Cоздал манифест для деплоя модифицированной fedora (./task-1/fedora-deployment).
 
 4. Создал неймспейс для приложения
 
@@ -82,7 +82,7 @@ kubectl apply -f ./vault/01-ss.yaml -n clokub-14-02
 kubectl apply -f ./vault/02-svc.yaml -n clokub-14-02 
 ```
 
-6. Делаем порт форвард на созданный сервис, переходим в веб интерфейс vault, конфигурируем и созраняем ключи.
+6. Делаем порт форвард на созданный сервис, переходим в веб интерфейс vault, конфигурируем через веб интерфейс и сохраняем ключи.
 
 7. Авторизуемся под полученным root токеном
 
@@ -104,7 +104,7 @@ kubectl get pod -n clokub-14-02 vault-0 -o json | jq -c '.status.podIPs'
 10. Деплоим модифицированную fedora, переходим в консоль контейнера и запускаем интерпретатор python
 
 ```
-kubectl apply -f ./app/ -n clokub-14-02
+kubectl apply -f ./task-1/ -n clokub-14-02
 
 kubectl exec -n clokub-14-02 -it fedora-64b5888bd5-p9sbs -- sh
 
@@ -118,10 +118,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 11. Импортируем hvac и настраиваем клиент с использованием полученного адреса vault и root токена
 ```
 >>> import hvac
-10.112.129.11:8200',
-    token='s.WvCvac6xd88Qohq21MWiD1NO'
-)
-client.is_authenticated()>>> client = hvac.Client(
+>>> client = hvac.Client(
 ...     url='http://10.112.129.11:8200',
 ...     token='s.WvCvac6xd88Qohq21MWiD1NO'
 ... )
@@ -180,6 +177,19 @@ vault-0                   1/1     Running   1          14h   10.112.129.11   cl1
 
 ### Решение
 
+  
+1. 
+
+
+```
+kubectl exec -n clokub-14-02 vault-approle-demo-6fb4c6f86b-mtwbt --container fedora -- python3 /app/main.py
+
+```
+
+2. 
+
+3. 
 
 
 ---
+
