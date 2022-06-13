@@ -2,64 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vault-approle-demo
+  name: vault-approle-auth
   labels:
-    role: vault-approle-demo
+    role: vault-approle-auth
 spec:
   replicas: 1
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      role: vault-approle-demo
+      role: vault-approle-auth
   template:
     metadata:
       labels:
-        role: vault-approle-demo
+        role: vault-approle-auth
     spec:
       shareProcessNamespace: true
-      # initContainers:
-      #   - name: init-app-config
-      #     image: vault:1.9.0
-      #     imagePullPolicy: IfNotPresent
-      #     securityContext:
-      #       runAsUser: 10001
-      #       runAsNonRoot: true
-      #       capabilities:
-      #         add:
-      #           - IPC_LOCK
-      #     args:
-      #       - "agent"
-      #       - "-config=/etc/vault/config/vault-agent.hcl"
-      #     env:
-      #       - name: SKIP_SETCAP
-      #         value: 'true'
-      #     volumeMounts:
-      #       - mountPath: /etc/vault/config
-      #         name: vault-config
-      #       - mountPath: /etc/vault/config/approle
-      #         name: approle-config
       containers:
-        # - name: shell
-        #   image: busybox
-        #   resources:
-        #     limits:
-        #       cpu: 200m
-        #       memory: 256Mi
-        #     requests:
-        #       cpu: 100m
-        #       memory: 128Mi
-        #   securityContext:
-        #     capabilities:
-        #       add:
-        #         - SYS_PTRACE
-        #   stdin: true
-        #   tty: true
-        #   volumeMounts:
-        #     - mountPath: /app/config
-        #       name: approle-config
         - image: rdegtyarev/fedora-pip:0.2.0
           imagePullPolicy: Always
-          name: fedora
+          name: fedora-app
           resources:
             limits:
               cpu: 200m
@@ -80,14 +41,14 @@ spec:
             - name: APPROLE_VAULT_ADDR
               value: http://vault.clokub-14-02:8200
             - name: APPROLE_SECRET_MOUNT_POINT
-              value: secrets
+              value: netology
             - name: APPROLE_SECRET_PATH
-              value: /k11s/demo/app/nginx
+              value: clokub-14-02/task-2
           command: ["/bin/sleep", "365d"]
           volumeMounts:
             - mountPath: /app/config
               name: approle-config
-        - name: render-app-config
+        - name: vault-agent
           image: vault:1.9.0
           imagePullPolicy: IfNotPresent
           resources:
@@ -105,7 +66,7 @@ spec:
                 - IPC_LOCK
           args:
             - "agent"
-            - "-config=/etc/vault/config/vault-agent-reload.hcl"
+            - "-config=/etc/vault/config/vault-agent.hcl"
           env:
             - name: SKIP_SETCAP
               value: 'true'

@@ -15,14 +15,17 @@ mp=os.getenv('APPROLE_SECRET_MOUNT_POINT')
 # Получаем path секрета из env (APPROLE_SECRET_PATH)
 p=os.getenv('APPROLE_SECRET_PATH')
 
+# Авторизуемся в vault с использованием полученного токена
 client = hvac.Client(
   url=u,
   token=t
 )
 
+# Читаем секрет из vault, из указанного в переменной path и mount_point
 result=client.secrets.kv.v2.read_secret_version(
   mount_point=mp,
   path=p
 )
 
+# Отдаем ответ
 print(result["data"]["data"]["responseText"])

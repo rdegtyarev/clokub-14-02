@@ -17,39 +17,6 @@ data:
 
       sink {
           type = "file"
-          wrap_ttl = "1m"
-          config = {
-            path = "/etc/vault/config/approle/wrapped_token"
-            mode = 0777
-          }
-        }
-
-      sink {
-        type = "file"
-        config = {
-          path = "/etc/vault/config/approle/unwrapped_token"
-          mode = 0777
-          }
-        }
-    }
-
-    vault {
-      address = "http://vault.clokub-14-02:8200"
-    }
-    exit_after_auth = true
-  vault-agent-reload.hcl: |
-    pid_file = "/tmp/.pidfile"
-
-    auto_auth {
-      mount_path = "auth/approle"
-      method "approle" {
-        config = {
-          role_id_file_path = "/etc/vault/config/app-role-id"
-        }
-      }
-
-      sink {
-          type = "file"
           wrap_ttl = "4m"
           config = {
             path = "/etc/vault/config/approle/wrapped_token"
@@ -70,4 +37,4 @@ data:
       address = "http://vault.clokub-14-02:8200"
     }
   app-role-id: |
-    66d89cff-2287-8e05-2fbd-2bee1ed0e1e3
+    305f6e63-a849-bcd2-41af-b052df35f94d
